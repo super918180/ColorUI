@@ -1,0 +1,11 @@
+/* TEAM */
+    Founder & Developer: songjiachao
+    Contact: 873668938@qq.com
+    Blog: http://www.cnblogs.com/songxiaoyu
+
+/* THANKS */
+    github
+    Site: http://github.com
+    cnblogs
+    Site: http://www.cnblogs.com
+
