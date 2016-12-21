@@ -194,7 +194,7 @@ header .main ul li {
 
 header .main ul li a {
     display: inline-block;
-    padding: 0 3rem;
+    padding: 0 2.5rem;
     line-height: 4em;
     font-size: 1.6rem;
     font-weight: bold;
@@ -206,6 +206,38 @@ header .main ul li a:hover,
 header .main ul li a:active {
     color: #ffb300;
     background-color: #f8f6f1;
+}
+
+@media only screen and (max-width:800px) {
+    header .main .brand {
+        float: none;
+        display: block;
+        padding: 0;
+        margin: 1.5rem auto 0.5rem;
+        text-align: center;
+    }
+    header .main ul {
+        text-align: center;
+    }
+    header .main ul li {
+        border: none;
+    }
+    header .main ul li a {
+        padding: 0 1.5rem;
+    }
+}
+
+@media only screen and (max-width:480px) {
+    header .main ul li {
+        line-height: 3rem;
+    }
+    header .main ul li:first-child {
+        display: none;
+    }
+    header .main ul li a {
+        font-weight: normal;
+        padding: 0 1.5rem;
+    }
 }
 
 
@@ -261,6 +293,41 @@ header .main ul li a:active {
     color: #fff;
 }
 
+@media only screen and (max-width:800px) {
+    .trans-data {
+        padding: 1rem 0.5rem;
+    }
+    .trans-data span {
+        font-size: 1.2rem;
+    }
+    .trans-data span.trans-money {
+        font-size: 1.6rem;
+        margin: 0;
+        padding: 0;
+        letter-spacing: inherit;
+        box-shadow: none;
+        background: transparent;
+    }
+    .trans-report a {
+        font-size: 1.2rem;
+    }
+}
+
+@media only screen and (max-width:480px) {
+    .transaction {
+        padding: 0.5rem 0;
+    }
+    .trans-data,
+    .trans-report {
+        float: none;
+        text-align: center;
+    }
+    .trans-data,
+    .trans-report a {
+        padding: 0;
+    }
+}
+
 
 /*滚动广告*/
 
@@ -309,6 +376,41 @@ header .main ul li a:active {
     padding: 0;
     color: #999;
 }
+
+@media only screen and (min-width:704px) and (max-width:800px) {
+    .feature .item h3 {
+        display: block;
+        width: 100%;
+        font-size: 2.6rem;
+        text-align: center;
+        line-height: 4rem;
+    }
+    .feature .item div {
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .feature .item p {
+        font-size: 1.2rem;
+    }
+}
+
+@media only screen and (max-width:703px) {
+    .feature {
+        width: 96%;
+        margin: 1rem auto;
+    }
+    .feature .item {
+        display: block;
+        width: auto;
+    }
+    .feature .item+.item {
+        margin: 1rem 0 0;
+    }
+}
+
+
+/*最新公告*/
 
 .notice {
     width: 90%;
