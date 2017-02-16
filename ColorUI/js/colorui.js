@@ -207,3 +207,125 @@
     };
 })(jQuery);
 //输入框end
+
+// 下拉菜单start
+(function($) {
+    var CreateDroplist = (function() {
+        function CreateDroplist(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateDroplist.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateDroplist.prototype = {
+            // 初始化插件
+            init: function() {
+                this.type = this.settings.type;
+                this.class = this.settings.class;
+                this.isSplit = this.settings.isSplit;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                var droplistdContainer = $('<div class="btn-group"></div>');
+                // 左侧button
+                var firstButton = $('<button class="btn"></button>');
+                firstButton.addClass('btn-' + this.class);
+                // 右侧button
+                var lastButton = $('<button class="btn dropdown-toggle" data-toggle="dropdown"></button>');
+                lastButton.addClass('btn-' + this.class);
+                // 分裂式给后面的button加上下拉图标,否则给前面的加上图标
+                if (this.isSplit) {
+                    lastButton.append('<span class="caret"></span>');
+                    droplistdContainer.append(firstButton, lastButton);
+                } else {
+                    firstButton.append('<span class="caret"></span>');
+                    droplistdContainer.append(lastButton);
+                }
+                this.element.append(droplistdContainer);
+            },
+            // 绑定事件
+            _initEvent: function() {
+                // 获取焦点focus,失去焦点blur,值改变change
+                // 如果输入框只读的话就不操作
+                var _this = this;
+                _this.input.bind('blur keyup', function() {
+                    if (!_this.input.attr('readonly')) {
+                        if (_this.isRequired) {
+                            if (_this.getValue() === '') {
+                                _this.setStatus('error');
+                            }
+                        } else {
+                            if (_this._checkSpec()) {
+                                _this._checkLengh();
+                            } else {
+                                _this.setStatus('error');
+                            }
+                        }
+                    }
+                });
+            },
+            //输入框置灰
+            setGrey: function(flag) {
+                var _this = this;
+                if (flag) {
+                    this.input.attr('readonly', '');
+                } else {
+                    this.input.removeAttr('readonly');
+                }
+            },
+            //获取输入框值
+            getValue: function() {
+                return this.input.val();
+            },
+            //设置输入框值
+            setValue: function(str) {
+                this.input.val(str);
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateDroplist;
+    })();
+    $.fn.CreateDroplist = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateDroplist');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateDroplist(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateDroplist', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateDroplist.defaultValue = {
+        // 单按钮下拉菜单,分裂式按钮下拉菜单 
+        //default,primary,success,info,warning,danger
+        class: 'default',
+        // 是否是分裂式
+        isSplit: false,
+        //up,down
+        direction: 'down',
+        // [{title:1,value:1,selectd:true}]
+        data: [],
+        // 值改变时触发的方法
+        valueChange: null,
+        // 点击下拉的时候触发的方法
+        dropDown: null
+    };
+})(jQuery);
+//下拉菜单end

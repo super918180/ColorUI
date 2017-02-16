@@ -18,4 +18,10 @@ $(function() {
         rightAddon: null
     });
     var text1 = $('#text1').data('CreateInput');
+    $('#droplist1').CreateDroplist({
+        data: [{ title: 1, value: 1, select: true },
+            { title: 2, value: 2, select: false }
+        ]
+    });
+    var droplist1 = $('#droplist1').data('CreateDroplist');
 });
