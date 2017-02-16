@@ -1,11 +1,11 @@
 $(function() {
     $('#text1').CreateInput({
         // 输入框类型：text、password、datetime、datetime-local、date、month、time、week、number、email、url、search、tel 和 color。
-        type: "text",
+        type: 'text',
         //输入框规则
         spec: null,
         //长度
-        length: null,
+        length: '2-5',
         //描述输入字段
         placeholder: null,
         //是否必填
@@ -18,5 +18,4 @@ $(function() {
         rightAddon: null
     });
     var text1 = $('#text1').data('CreateInput');
-    text1.setStatus('error');
 });

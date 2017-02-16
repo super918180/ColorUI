@@ -45,11 +45,11 @@
                     inputGroup.append(rightAddon);
                 }
                 //图标反馈
+                var feedbackSpan = $('<span class="glyphicon form-control-feedback"></span>');
+                this.feedbackSpan = feedbackSpan;
                 if (this.hasFeedback) {
                     inputContainer.addClass('has-feedback');
-                    var feedbackSpan = $('<span class="glyphicon form-control-feedback"></span>');
                     inputGroup.append(feedbackSpan);
-                    this.feedbackSpan = feedbackSpan;
                 }
                 inputContainer.append(inputGroup);
                 this.element.append(inputContainer);
@@ -62,33 +62,32 @@
                 // 获取焦点focus,失去焦点blur,值改变change
                 // 如果输入框只读的话就不操作
                 var _this = this;
-                this.input.blur(function() {
-                    if (!$(this).attr('readonly')) {
-                        if (_this.getValue() === '') {
-                            if (this.isRequired) {
-                                // 必填项失去焦点
-                                this.setStatus(this, 'error');
+                _this.input.bind('blur keyup', function() {
+                    if (!_this.input.attr('readonly')) {
+                        if (_this.isRequired) {
+                            if (_this.getValue() === '') {
+                                _this.setStatus('error');
                             }
                         } else {
-                            // 有值得情况直接进行值校验
-                            if (this._checkSpec()) {
-                                this.setStatus(this, 'right');
+                            if (_this._checkSpec()) {
+                                _this._checkLengh();
                             } else {
-                                this.setStatus(this, 'error');
+                                _this.setStatus('error');
                             }
                         }
                     }
-                }).keyup(function() {
-                    this._checkLenght();
                 });
             },
             //校验输入框输入内容
             _checkSpec: function() {
-                var _this = this;
-                return this.spec.test(this.getValue());
+                if (this.spec) {
+                    return this.spec.test(this.getValue());
+                } else {
+                    return true;
+                }
             },
             //检验输入框输入长度
-            _checkLenght: function() {
+            _checkLengh: function() {
                 var _this = this,
                     inputLength = this.length,
                     //8-32这种格式的范围
@@ -115,9 +114,9 @@
                 }
                 // 长度不在区间飘红
                 if (!lengthFlag) {
-                    this.setStatus(this.input, 'error');
+                    this.setStatus('error');
                 } else {
-                    this.setStatus(this.input, 'focus');
+                    this.setStatus('right');
                 }
 
             },
@@ -140,24 +139,11 @@
 
                 }
             },
-            //设置输入框大小
-            setSize: function(size) {
-                var _this = this;
-                var scaleSize = 1;
-                if (size === 'small') {
-                    scaleSize = 0.8;
-                } else if (size === 'big') {
-                    scaleSize = 1.2;
-                } else if (parseInt(size, 10) !== NaN) {
-                    scaleSize = parseInt(size, 10)
-                };
-                this.container.css('transform', 'scale(' + scaleSize + ')');
-            },
             //输入框置灰
             setGrey: function(flag) {
                 var _this = this;
                 if (flag) {
-                    this.input.prop('readonly', '');
+                    this.input.attr('readonly', '');
                 } else {
                     this.input.removeAttr('readonly');
                 }
