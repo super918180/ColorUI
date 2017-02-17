@@ -19,8 +19,9 @@ $(function() {
     });
     var text1 = $('#text1').data('CreateInput');
     $('#droplist1').CreateDroplist({
-        data: [{ title: 1, value: 1, select: true },
-            { title: 2, value: 2, select: false }
+        data: [{ title: 'Action', value: '1', selected: true },
+            { title: 'Another action', value: '2', selected: false },
+            { title: 'Something else here', value: '3', selected: false }
         ]
     });
     var droplist1 = $('#droplist1').data('CreateDroplist');

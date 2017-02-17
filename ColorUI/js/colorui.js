@@ -223,51 +223,79 @@
                 this.type = this.settings.type;
                 this.class = this.settings.class;
                 this.isSplit = this.settings.isSplit;
+                this.data = this.settings.data;
                 this._initDom();
             },
             //初始化输入框DOM结构
             _initDom: function() {
-                var droplistdContainer = $('<div class="btn-group"></div>');
+                this.droplistContainer = $('<div class="btn-group"></div>');
                 // 左侧button
-                var firstButton = $('<button class="btn"></button>');
-                firstButton.addClass('btn-' + this.class);
+                this.firstButton = $('<button class="btn"></button>');
+                this.firstButton.addClass('btn-' + this.class);
                 // 右侧button
-                var lastButton = $('<button class="btn dropdown-toggle" data-toggle="dropdown"></button>');
-                lastButton.addClass('btn-' + this.class);
+                this.lastButton = $('<button class="btn dropdown-toggle" data-toggle="dropdown"></button>');
+                this.lastButton.addClass('btn-' + this.class);
                 // 分裂式给后面的button加上下拉图标,否则给前面的加上图标
+                this.lastButton.append('<span class="caret"></span>');
                 if (this.isSplit) {
-                    lastButton.append('<span class="caret"></span>');
-                    droplistdContainer.append(firstButton, lastButton);
+                    this.droplistContainer.append(this.firstButton, this.lastButton);
                 } else {
-                    firstButton.append('<span class="caret"></span>');
-                    droplistdContainer.append(lastButton);
+                    this.droplistContainer.append(this.lastButton);
                 }
-                this.element.append(droplistdContainer);
+                this.listContainer = $('<ul class="dropdown-menu"></ul>');
+                this.initData();
+                this.droplistContainer.append(this.listContainer);
+                this.element.append(this.droplistContainer);
             },
             // 绑定事件
             _initEvent: function() {
-                // 获取焦点focus,失去焦点blur,值改变change
-                // 如果输入框只读的话就不操作
-                var _this = this;
-                _this.input.bind('blur keyup', function() {
-                    if (!_this.input.attr('readonly')) {
-                        if (_this.isRequired) {
-                            if (_this.getValue() === '') {
-                                _this.setStatus('error');
-                            }
-                        } else {
-                            if (_this._checkSpec()) {
-                                _this._checkLengh();
-                            } else {
-                                _this.setStatus('error');
-                            }
-                        }
-                    }
+
+            },
+            //从数组中获取符合条件的数据
+            _getQualifiedData: function(value) {
+                var tempData = this.data.filter(function(item) {
+                    return item.value === value;
                 });
+                if (tempData) {
+                    return tempData[0];
+                } else {
+                    return _this.data[0];
+                }
+            },
+            initData: function() {
+                var _this = this;
+                this.listContainer.empty();
+                var list = [];
+                for (var i = 0; i < this.data.length; i++) {
+                    var currentLi = $('<li></li>');
+                    var currentA = $('<a href="#">' + this.data[i].title + '</a>');
+                    currentA.attr('data-value', this.data[i].value);
+                    currentA.click(function() {
+                        $(this).parent().siblings().removeClass('active');
+                        $(this).parent().addClass('active');
+                        _this.valueChange($(this).attr('data-value'));
+                    });
+                    currentLi.append(currentA);
+                    list.push(currentLi);
+                    if (this.data[i].selected) {
+                        currentLi.addClass('active');
+                        this.valueChange(this.data[i].value);
+                    }
+                }
+                this.listContainer.append(list);
+                this.droplistContainer.append(this.listContainer);
+            },
+            valueChange: function(value) {
+                var currentData = this._getQualifiedData(value);
+                this.droplistContainer.find('.valueSpan').remove();
+                if (this.isSplit) {
+                    this.firstButton.prepend('<span class="valueSpan" >' + currentData.title + ' </span>');
+                } else {
+                    this.lastButton.prepend('<span class="valueSpan" >' + currentData.title + ' </span>');
+                }
             },
             //输入框置灰
             setGrey: function(flag) {
-                var _this = this;
                 if (flag) {
                     this.input.attr('readonly', '');
                 } else {
@@ -276,11 +304,11 @@
             },
             //获取输入框值
             getValue: function() {
-                return this.input.val();
+
             },
             //设置输入框值
             setValue: function(str) {
-                this.input.val(str);
+
             }
         };
         // 必须要将该对象返回出去
@@ -320,7 +348,7 @@
         isSplit: false,
         //up,down
         direction: 'down',
-        // [{title:1,value:1,selectd:true}]
+        // [{title:1,value:1,selected:true}]
         data: [],
         // 值改变时触发的方法
         valueChange: null,
