@@ -140,13 +140,11 @@
                 }
             },
             //输入框置灰
-            setGrey: function(flag) {
-                var _this = this;
-                if (flag) {
-                    this.input.attr('readonly', '');
-                } else {
-                    this.input.removeAttr('readonly');
-                }
+            setDisabled: function(flag) {
+                this.input.attr('readonly', '');
+            },
+            removeDisabled: function() {
+                this.input.removeAttr('readonly');
             },
             //获取输入框值
             getValue: function() {
@@ -208,6 +206,285 @@
 })(jQuery);
 //输入框end
 
+//单选按钮start
+(function($) {
+    var CreateRadio = (function() {
+        function CreateRadio(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateRadio.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateRadio.prototype = {
+            // 初始化插件
+            init: function() {
+                this.inline = this.settings.inline;
+                this.group = this.settings.group;
+                this.selected = this.settings.selected;
+                this.data = this.settings.data;
+                this._initDom();
+            },
+            _initDom: function() {
+                var _this = this;
+                this.radioContainer = $('<div class="radio-group"></div>');
+                var allRadio = [];
+                for (var i = 0; i < this.data.length; i++) {
+                    var currentRadioContainer = $('<div class = "radio"></div>');
+                    var currentLabel = $('<label></label>');
+                    var currentRadioTemp = '<input type="radio" name="' + this.element.attr('id') + '-radio">' + this.data[i].title;
+                    currentLabel.append(currentRadioTemp);
+                    var currentRadio = currentLabel.find('input');
+                    currentRadio.click(function(e) {
+                        e.stopPropagation();
+                        if ($.type(_this.settings.changeFunc) && !$(this).attr('disabled')) {
+                            _this.settings.changeFunc();
+                        }
+                    });
+                    // 是否是内联，内敛直接多个label并列，非内联label需要使用div包裹
+                    if (this.inline) {
+                        currentLabel.addClass('radio-inline');
+                        allRadio.push(currentLabel);
+                    } else {
+                        currentRadioContainer.append(currentLabel);
+                        allRadio.push(currentRadioContainer);
+                    }
+                }
+                this.radioContainer.append(allRadio);
+                this.element.append(this.radioContainer);
+                this.radioAll = _this.element.find('input');
+                this.setChecked(this.selected);
+            },
+            //默认选中项
+            setChecked: function(index) {
+                this.radioAll.removeAttr('checked');
+                this.radioAll.get(index).checked = true;
+            },
+            // 置灰
+            setDisabled: function(indexArr) {
+                for (var i = 0; i < indexArr.length; i++) {
+                    if (this.inline) {
+                        this.radioAll.eq(indexArr[i]).attr('disabled', 'disabled').parent().addClass('disabled');
+                    } else {
+                        this.radioAll.eq(indexArr[i]).attr('disabled', 'disabled').parent().parent().addClass('disabled');
+                    }
+                }
+            },
+            removeDisabled: function(indexArr) {
+                for (var i = 0; i < indexArr.length; i++) {
+                    if (this.inline) {
+                        this.radioAll.eq(indexArr[i]).removeAttr('disabled', 'disabled').parent().removeClass('disabled');
+                    } else {
+                        this.radioAll.eq(indexArr[i]).removeAttr('disabled', 'disabled').parent().parent().removeClass('disabled');
+                    }
+                }
+            },
+            //获取输入框值
+            getValue: function() {
+                var selectIndex = 0;
+                this.radioAll.each(function(index) {
+                    if ($(this).is(':checked')) {
+                        selectIndex = index;
+                    }
+                });
+                return selectIndex;
+            },
+        };
+        // 必须要将该对象返回出去
+        return CreateRadio;
+    })();
+    $.fn.CreateRadio = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateRadio');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateRadio(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateRadio', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateRadio.defaultValue = {
+        // 是否内联
+        inline: false,
+        // 所属组
+        group: '',
+        //数据
+        data: [],
+        //默认选中
+        selected: 0,
+        //值改变的时候调用
+        changeFunc: null
+    };
+})(jQuery);
+// 单选按钮end
+
+//复选按钮start
+(function($) {
+    var CreateCheckbox = (function() {
+        function CreateCheckbox(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateCheckbox.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateCheckbox.prototype = {
+            // 初始化插件
+            init: function() {
+                this.inline = this.settings.inline;
+                this.group = this.settings.group;
+                this.data = this.settings.data;
+                this.selected = this.settings.selected;
+                this._initDom();
+            },
+            _initDom: function() {
+                var _this = this;
+                this.checkboxContainer = $('<div class="checkbox-group"></div>');
+                var allCheckbox = [];
+                for (var i = 0; i < this.data.length; i++) {
+                    var currentCheckboxContainer = $('<div class = "checkbox"></div>');
+                    var currentLabel = $('<label></label>');
+                    var currentCheckboxTemp = '<input type="checkbox" name="' + this.element.attr('id') + '-radio">' + this.data[i].title;
+                    currentLabel.append(currentCheckboxTemp);
+                    var currentCheckbox = currentLabel.find('input');
+                    currentCheckbox.click(function(e) {
+                        e.stopPropagation();
+                        _this.changeFunc();
+                    });
+                    // 是否是内联，内敛直接多个label并列，非内联label需要使用div包裹
+                    if (this.inline) {
+                        currentLabel.addClass('checkbox-inline');
+                        allCheckbox.push(currentLabel);
+                    } else {
+                        currentCheckboxContainer.append(currentLabel);
+                        allCheckbox.push(currentCheckboxContainer);
+                    }
+                }
+                this.checkboxContainer.append(allCheckbox);
+                this.element.append(this.checkboxContainer);
+                this.checkboxAll = _this.element.find('input');
+                this.setChecked(this.selected);
+            },
+            //默认选中项
+            setChecked: function(indexArr) {
+                this.checkboxAll.removeAttr('checked');
+                for (var i = 0; i < indexArr.length; i++) {
+                    this.checkboxAll.eq(indexArr[i]).prop('checked', 'checked');
+                }
+            },
+            // 置灰
+            setDisabled: function(indexArr) {
+                for (var i = 0; i < indexArr.length; i++) {
+                    if (this.inline) {
+                        this.checkboxAll.eq(indexArr[i]).attr('disabled', 'disabled').parent().addClass('disabled');
+                    } else {
+                        this.checkboxAll.eq(indexArr[i]).attr('disabled', 'disabled').parent().parent().addClass('disabled');
+                    }
+                }
+            },
+            removeDisabled: function() {
+                for (var i = 0; i < indexArr.length; i++) {
+                    if (this.inline) {
+                        this.checkboxAll.eq(indexArr[i]).removeAttr('disabled', 'disabled').parent().removeClass('disabled');
+                    } else {
+                        this.checkboxAll.eq(indexArr[i]).removeAttr('disabled', 'disabled').parent().parent().removeClass('disabled');
+                    }
+                }
+            },
+            seclectAll: function() {
+                var id = this.element.attr('id');
+                $('#' + id + ' input[type="checkbox"]').prop('checked', true);
+            },
+            seclectNone: function() {
+                var id = this.element.attr('id');
+                $('#' + id + ' input[type="checkbox"]').removeAttr('checked');
+            },
+            selectInverse: function() {
+                var id = this.element.attr('id');
+                $('#' + id + ' input[type="checkbox"]').each(function() {
+                    if ($(this).prop('checked')) {
+                        $(this).removeAttr('checked');
+                    } else {
+                        $(this).prop('checked', true);
+                    }
+                });
+            },
+            //获取选中值
+            getValue: function() {
+                var selectIndexArr = [];
+                this.checkboxAll.each(function(index) {
+                    if ($(this).is(':checked')) {
+                        selectIndexArr.push(index);
+                    }
+                });
+                return selectIndexArr;
+            },
+            // 点击checkbox回调函数
+            changeFunc: function() {
+                //每次值改变的时候自定义函数
+                if ($.type(this.settings.changeFunc) && !$(this).attr('disabled')) {
+                    this.settings.changeFunc();
+                }
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateCheckbox;
+    })();
+    $.fn.CreateCheckbox = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateCheckbox');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateCheckbox(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateCheckbox', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateCheckbox.defaultValue = {
+        // 所属组
+        group: '',
+        //显示的文字
+        textArr: [],
+        //checkbox每一项对应的值
+        valueArr: [],
+        //值改变的时候调用
+        changeFunc: null
+    };
+})(jQuery);
+//复选框end
+
 // 下拉菜单start
 (function($) {
     var CreateDroplist = (function() {
@@ -220,15 +497,20 @@
         CreateDroplist.prototype = {
             // 初始化插件
             init: function() {
-                this.type = this.settings.type;
                 this.class = this.settings.class;
                 this.isSplit = this.settings.isSplit;
+                this.direction = this.settings.direction;
                 this.data = this.settings.data;
                 this._initDom();
             },
             //初始化输入框DOM结构
             _initDom: function() {
+                var _this = this;
                 this.droplistContainer = $('<div class="btn-group"></div>');
+                this.droplistContainer.width('100%');
+                if (this.direction === 'up') {
+                    this.droplistContainer.addClass('dropup');
+                }
                 // 左侧button
                 this.firstButton = $('<button class="btn"></button>');
                 this.firstButton.addClass('btn-' + this.class);
@@ -238,18 +520,24 @@
                 // 分裂式给后面的button加上下拉图标,否则给前面的加上图标
                 this.lastButton.append('<span class="caret"></span>');
                 if (this.isSplit) {
+                    // 宽度要减去右边箭头按钮的宽度
+                    this.firstButton.css('width', 'calc(100% - 26px)');
                     this.droplistContainer.append(this.firstButton, this.lastButton);
+
                 } else {
+                    this.lastButton.width('100%');
                     this.droplistContainer.append(this.lastButton);
                 }
+                this.lastButton.click(function() {
+                    if ($.type(_this.settings.dropDown) === 'function' && !$(this).parent().hasClass('open')) {
+                        _this.settings.dropDown();
+                    }
+                });
                 this.listContainer = $('<ul class="dropdown-menu"></ul>');
+                this.listContainer.width('100%');
                 this.initData();
                 this.droplistContainer.append(this.listContainer);
                 this.element.append(this.droplistContainer);
-            },
-            // 绑定事件
-            _initEvent: function() {
-
             },
             //从数组中获取符合条件的数据
             _getQualifiedData: function(value) {
@@ -262,53 +550,67 @@
                     return _this.data[0];
                 }
             },
+            //根据data设置下拉组件的菜单选项
             initData: function() {
                 var _this = this;
                 this.listContainer.empty();
                 var list = [];
                 for (var i = 0; i < this.data.length; i++) {
+                    // 生成li
                     var currentLi = $('<li></li>');
-                    var currentA = $('<a href="#">' + this.data[i].title + '</a>');
-                    currentA.attr('data-value', this.data[i].value);
-                    currentA.click(function() {
-                        $(this).parent().siblings().removeClass('active');
-                        $(this).parent().addClass('active');
-                        _this.valueChange($(this).attr('data-value'));
-                    });
-                    currentLi.append(currentA);
+                    //是否插入分割线
+                    if (this.data[i].isSeparator) {
+                        currentLi.addClass('divider').attr('role', 'separator');
+                    } else {
+                        // li下面插入a标签
+                        var currentA = $('<a href="#">' + this.data[i].title + '</a>');
+                        currentA.attr('data-value', this.data[i].value);
+                        // 是否是禁用的菜单项
+                        if (this.data[i].disabled) {
+                            currentLi.addClass('disabled');
+                        } else {
+                            currentA.click(function() {
+                                $(this).parent().siblings().removeClass('active');
+                                $(this).parent().addClass('active');
+                                _this.changeFunc($(this).attr('data-value'), true);
+                            });
+                        }
+                        currentLi.append(currentA);
+                    }
                     list.push(currentLi);
                     if (this.data[i].selected) {
                         currentLi.addClass('active');
-                        this.valueChange(this.data[i].value);
+                        this.changeFunc(this.data[i].value, false);
                     }
                 }
                 this.listContainer.append(list);
                 this.droplistContainer.append(this.listContainer);
             },
-            valueChange: function(value) {
+            changeFunc: function(value, isExecuteUserFun) {
                 var currentData = this._getQualifiedData(value);
                 this.droplistContainer.find('.valueSpan').remove();
                 if (this.isSplit) {
-                    this.firstButton.prepend('<span class="valueSpan" >' + currentData.title + ' </span>');
+                    this.firstButton.prepend('<span class="valueSpan" data-value="' + currentData.value + '">' + currentData.title + ' </span>');
                 } else {
-                    this.lastButton.prepend('<span class="valueSpan" >' + currentData.title + ' </span>');
+                    this.lastButton.prepend('<span class="valueSpan" data-value="' + currentData.value + '">' + currentData.title + ' </span>');
+                }
+                //用户是否已经自定义值改变时的方法，并且需要执行
+                if ($.type(this.settings.changeFunc) === 'function' && isExecuteUserFun) {
+                    this.settings.changeFunc();
                 }
             },
             //输入框置灰
-            setGrey: function(flag) {
-                if (flag) {
-                    this.input.attr('readonly', '');
-                } else {
-                    this.input.removeAttr('readonly');
-                }
+            setDisabled: function() {
+                this.firstButton.attr('disabled', 'disabled');
+                this.lastButton.attr('disabled', 'disabled');
+            },
+            removeDisabled: function() {
+                this.firstButton.removeAttr('disabled');
+                this.lastButton.removeAttr('disabled');
             },
             //获取输入框值
             getValue: function() {
-
-            },
-            //设置输入框值
-            setValue: function(str) {
-
+                return this.droplistContainer.find('.valueSpan').attr('data-value');
             }
         };
         // 必须要将该对象返回出去
@@ -351,7 +653,7 @@
         // [{title:1,value:1,selected:true}]
         data: [],
         // 值改变时触发的方法
-        valueChange: null,
+        changeFunc: null,
         // 点击下拉的时候触发的方法
         dropDown: null
     };
