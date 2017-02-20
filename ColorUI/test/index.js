@@ -83,4 +83,13 @@ $(function() {
     var checkboxObj = $("#checkbox1").data('CreateCheckbox');
     checkboxObj.setDisabled([1]);
     console.log(checkboxObj.getValue());
+
+    $("#switch0").CreateSwitch({
+        status: "on",
+        changeFunc: function() {
+            console.log($("#switch0").data('CreateSwitch').getValue());
+        }
+    });
+    var switchObj = $("#switch0").data('CreateSwitch');
+    switchObj.setValue('off');
 });

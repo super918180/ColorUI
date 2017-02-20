@@ -659,3 +659,123 @@
     };
 })(jQuery);
 //下拉菜单end
+
+// 开关start
+(function($) {
+    var CreateSwitch = (function() {
+        function CreateSwitch(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateSwitch.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateSwitch.prototype = {
+            // 初始化插件
+            init: function() {
+                var _this = this;
+                _this.status = _this.settings.status;
+                _this.changeFunc = _this.settings.changeFunc;
+                _this._initDom();
+            },
+            _initDom: function() {
+                var _this = this,
+                    switchBackground = $('<div class="ui_switch_background"></div>'),
+                    switchFront = $('<div class="ui_switch_front"></div>');
+                switchBackground.append(switchFront);
+                if (_this.status === 'on') {
+                    switchBackground.addClass('ui_switch_background_on');
+                    switchFront.addClass('ui_switch_front_on')
+                } else {
+                    switchBackground.addClass('ui_switch_background_off');
+                    switchFront.addClass('ui_switch_front_off')
+                }
+                _this.element.append(switchBackground);
+                _this.switchBackground = _this.element.find('.ui_switch_background')
+                _this.switchFront = _this.element.find('.ui_switch_front')
+                _this._initEvent();
+            },
+            _initEvent: function() {
+                var _this = this;
+                _this.switchBackground.click(function() {
+                    if (!_this.switchBackground.hasClass('ui_switch_background_grey')) {
+                        if (_this.getValue() === "on") {
+                            _this.switchBackground.removeClass('ui_switch_background_on').addClass('ui_switch_background_off');
+                            _this.switchFront.removeClass('ui_switch_front_on').addClass('ui_switch_front_off');
+                        } else {
+                            _this.switchBackground.removeClass('ui_switch_background_off').addClass('ui_switch_background_on');
+                            _this.switchFront.removeClass('ui_switch_front_off').addClass('ui_switch_front_on');
+                        }
+                        //每次值改变的时候自定义函数
+                        if ($.type(_this.changeFunc) === 'function') {
+                            _this.changeFunc();
+                        }
+                    }
+                });
+            },
+            //置灰
+            setDisabled: function(flag) {
+                var _this = this;
+                _this.switchBackground.addClass('ui_switch_background_grey');
+            },
+            removeDisabled: function() {
+                _this.switchBackground.removeClass('ui_switch_background_grey');
+            },
+            //获取值
+            getValue: function() {
+                var _this = this;
+                if (_this.switchFront.hasClass('ui_switch_front_on')) {
+                    return "on";
+                } else {
+                    return "off";
+                }
+            },
+            //设置值
+            setValue: function(status) {
+                var _this = this;
+                if (status === "on") {
+                    _this.switchBackground.removeClass('ui_switch_background_off').addClass('ui_switch_background_on');
+                    _this.switchFront.removeClass('ui_switch_front_off').addClass('ui_switch_front_on');
+                } else {
+                    _this.switchBackground.removeClass('ui_switch_background_on').addClass('ui_switch_background_off');
+                    _this.switchFront.removeClass('ui_switch_front_on').addClass('ui_switch_front_off');
+                }
+            }
+
+        };
+        // 必须要将该对象返回出去
+        return CreateSwitch;
+    })();
+    $.fn.CreateSwitch = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateSwitch');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateSwitch(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateSwitch', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateSwitch.defaultValue = {
+        // 状态
+        status: 'on',
+        changeFunc: null
+    };
+})(jQuery);
+// 开关end

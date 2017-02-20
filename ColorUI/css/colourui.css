@@ -1,0 +1,42 @@
+/*开关start*/
+
+.ui_switch_background {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    border-radius: 30px;
+}
+
+.ui_switch_front {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: right 0.5s ease;
+}
+
+.ui_switch_background_on {
+    border: 1px solid #08CD01;
+    background-color: #08CD01;
+}
+
+.ui_switch_front_on {
+    border: 1px solid #08CD01;
+    background-color: #FFF;
+}
+
+.ui_switch_background_off {
+    border: 1px solid #CCC;
+    background-color: #FFF;
+}
+
+.ui_switch_front_off {
+    right: 20px;
+    border: 1px solid #CCC;
+    background-color: #CCC;
+}
+
+
+/*开关end*/
