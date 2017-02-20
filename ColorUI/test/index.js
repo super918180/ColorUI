@@ -84,12 +84,32 @@ $(function() {
     checkboxObj.setDisabled([1]);
     console.log(checkboxObj.getValue());
 
-    $("#switch0").CreateSwitch({
+    $("#switch1").CreateSwitch({
         status: "on",
         changeFunc: function() {
-            console.log($("#switch0").data('CreateSwitch').getValue());
+            console.log($("#switch1").data('CreateSwitch').getValue());
         }
     });
-    var switchObj = $("#switch0").data('CreateSwitch');
+    var switchObj = $("#switch1").data('CreateSwitch');
     switchObj.setValue('off');
+
+    $("#button1").CreateButton({
+        class: 'success',
+        title: "Click Me",
+        //点击的时候调用
+        ckickFunc: function() {
+            console.log(1);
+        }
+    });
+    var buttonObj = $("#button1").data('CreateButton');
+    buttonObj.setDisabled();
+
+    $("#button2").CreateButton({
+        class: 'info',
+        title: "Click Me",
+        //点击的时候调用
+        ckickFunc: function() {
+            console.log(1);
+        }
+    });
 });

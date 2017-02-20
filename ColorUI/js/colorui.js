@@ -714,7 +714,6 @@
             },
             //置灰
             setDisabled: function(flag) {
-                var _this = this;
                 _this.switchBackground.addClass('ui_switch_background_grey');
             },
             removeDisabled: function() {
@@ -779,3 +778,87 @@
     };
 })(jQuery);
 // 开关end
+
+// 按钮start
+(function($) {
+    var CreateButton = (function() {
+        function CreateButton(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateButton.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateButton.prototype = {
+            // 初始化插件
+            init: function() {
+                this.class = this.settings.class;
+                this.title = this.settings.title;
+                this.ckickFunc = this.settings.ckickFunc;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                var _this = this;
+                this.button = $('<button class="btn"></button>');
+                this.button.addClass('btn-' + this.class);
+                this.button.html(this.title);
+                this.element.append(this.button);
+                this._initEvent();
+            },
+            _initEvent: function() {
+                var _this = this;
+                this.button.click(function() {
+                    if ($.type(_this.ckickFunc) === 'function' && !$(this).attr('disabled')) {
+                        _this.ckickFunc();
+                    }
+                });
+
+            },
+            //输入框置灰
+            setDisabled: function() {
+                this.button.attr('disabled', 'disabled');
+            },
+            removeDisabled: function() {
+                this.button.removeAttr('disabled');
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateButton;
+    })();
+    $.fn.CreateButton = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateButton');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateButton(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateButton', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateButton.defaultValue = {
+        // 单按钮下拉菜单,分裂式按钮下拉菜单 
+        //default,primary,success,info,warning,danger
+        class: 'default',
+        //按钮文字
+        title: 'Button',
+        //点击事件
+        ckickFunc: null,
+    };
+})(jQuery);
+//按钮end
