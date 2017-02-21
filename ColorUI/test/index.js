@@ -112,4 +112,70 @@ $(function() {
             console.log(1);
         }
     });
+
+    $("#tab1").CreateTab({
+        type: 'tab',
+        selectIndex: 1,
+        data: [{
+            'title': 'Home',
+            'ckickFunc': function() {
+                console.log(1);
+            }
+        }, {
+            'title': 'Profile',
+            'ckickFunc': function() {
+                console.log(2);
+            }
+        }, {
+            'title': 'Messages',
+            'ckickFunc': function() {
+                console.log(3);
+            }
+        }]
+    });
+    $("#tab2").CreateTab({
+        type: 'pill-vertical',
+        selectIndex: 1,
+        data: [{
+            'title': 'Home',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(1);
+            }
+        }, {
+            'title': 'Profile',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(2);
+            }
+        }, {
+            'title': 'Messages',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(3);
+            }
+        }]
+    });
+
+    $("#crumb1").CreateCrumb({
+        data: [{
+            'title': 'Home',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(1);
+            }
+        }, {
+            'title': 'Profile',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(2);
+            }
+        }, {
+            'title': 'Messages',
+            'url': "https://www.baidu.com/",
+            'ckickFunc': function() {
+                console.log(3);
+            }
+        }]
+    });
 });

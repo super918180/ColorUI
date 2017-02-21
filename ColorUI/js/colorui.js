@@ -862,3 +862,208 @@
     };
 })(jQuery);
 //按钮end
+
+//页签start
+(function($) {
+    var CreateTab = (function() {
+        function CreateTab(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateTab.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateTab.prototype = {
+            // 初始化插件
+            init: function() {
+                this.type = this.settings.type;
+                this.selectIndex = this.settings.selectIndex;
+                this.data = this.settings.data;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                var _this = this;
+                this.tabContainer = $('<ul class="nav"></ul>');
+                if (this.type === 'tab') {
+                    this.tabContainer.addClass('nav-tabs');
+                } else {
+                    this.tabContainer.addClass('nav-pills');
+                    if (this.type === 'pill-vertical') {
+                        this.tabContainer.addClass('nav-stacked');
+                    }
+                }
+                var list = [];
+                for (var i = 0; i < this.data.length; i++) {
+                    var liTemp = $('<li role="presentation"><a href="' + this.data[i].url + '">' + this.data[i].title + '</a></li>');
+                    if (this.selectIndex === i) {
+                        liTemp.addClass('active');
+                    }
+                    list.push(liTemp);
+                }
+                this.tabContainer.append(list);
+                this.list = this.tabContainer.find('li');
+                this.element.append(this.tabContainer);
+                this._initEvent();
+            },
+            _initEvent: function() {
+                var _this = this;
+                this.list.each(function(index) {
+                    $(this).click(function() {
+                        // 点击页签触发函数
+                        if (!$(this).hasClass('active')) {
+                            _this.list.removeClass('active');
+                            if ($.type(_this.data[index].ckickFunc) === 'function') {
+                                _this.data[index].ckickFunc();
+                            }
+                            $(this).addClass('active');
+                        }
+                    });
+                });
+            },
+            //输入框置灰
+            setDisabled: function() {
+                this.button.attr('disabled', 'disabled');
+            },
+            removeDisabled: function() {
+                this.button.removeAttr('disabled');
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateTab;
+    })();
+    $.fn.CreateTab = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateTab');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateTab(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateTab', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateTab.defaultValue = {
+        // 单按钮下拉菜单,分裂式按钮下拉菜单 
+        //tab,pill,pill-vertical
+        type: 'tab',
+        //默认选择哪个页签被选中
+        selectIndex: 0,
+        // 数据
+        data: []
+    };
+})(jQuery);
+//页签end
+
+//面包屑start
+(function($) {
+    var CreateCrumb = (function() {
+        function CreateCrumb(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreateCrumb.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateCrumb.prototype = {
+            // 初始化插件
+            init: function() {
+                this.type = this.settings.type;
+                this.selectIndex = this.settings.selectIndex;
+                this.data = this.settings.data;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                var _this = this;
+                this.CrumbContainer = $('<ol class="breadcrumb"></ol>');
+                var list = [];
+                for (var i = 0; i < this.data.length; i++) {
+                    var liTemp = $('<li><a href="' + this.data[i].url + '">' + this.data[i].title + '</a></li>');
+                    if (i === this.data.length - 1) {
+                        liTemp.addClass('active');
+                        liTemp.empty().append(this.data[i].title);
+                    }
+                    list.push(liTemp);
+                }
+                this.CrumbContainer.append(list);
+                this.list = this.CrumbContainer.find('li');
+                this.element.append(this.CrumbContainer);
+                this._initEvent();
+            },
+            _initEvent: function() {
+                var _this = this;
+                this.list.each(function(index) {
+                    $(this).click(function() {
+                        // 点击页签触发函数
+                        if (!$(this).hasClass('active')) {
+                            _this.list.removeClass('active');
+                            if ($.type(_this.data[index].ckickFunc) === 'function') {
+                                _this.data[index].ckickFunc();
+                            }
+                            $(this).addClass('active');
+                        }
+                    });
+                });
+            },
+            //输入框置灰
+            setDisabled: function() {
+                this.button.attr('disabled', 'disabled');
+            },
+            removeDisabled: function() {
+                this.button.removeAttr('disabled');
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateCrumb;
+    })();
+    $.fn.CreateCrumb = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateCrumb');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateCrumb(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateCrumb', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateCrumb.defaultValue = {
+        // 单按钮下拉菜单,分裂式按钮下拉菜单 
+        //tab,pill,pill-vertical
+        type: 'tab',
+        //默认选择哪个页签被选中
+        selectIndex: 0,
+        // 数据
+        data: []
+    };
+})(jQuery);
+//面包end
