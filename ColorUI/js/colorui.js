@@ -563,7 +563,7 @@
                         currentLi.addClass('divider').attr('role', 'separator');
                     } else {
                         // li下面插入a标签
-                        var currentA = $('<a href="#">' + this.data[i].title + '</a>');
+                        var currentA = $('<a href="javascript:;">' + this.data[i].title + '</a>');
                         currentA.attr('data-value', this.data[i].value);
                         // 是否是禁用的菜单项
                         if (this.data[i].disabled) {
@@ -1067,3 +1067,142 @@
     };
 })(jQuery);
 //面包end
+
+//分页start
+(function($) {
+    var CreatePages = (function() {
+        function CreatePages(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(true, $.fn.CreatePages.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreatePages.prototype = {
+            // 初始化插件
+            init: function() {
+                this.total = this.settings.total;
+                this.show = this.settings.show;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                if (this.total) {
+                    this.pageContainer = $('<nav></nav>');
+                    this.ulContainer = $('<ul class="pagination" style="float: left"></ul>');
+                    this.divContainer = $('<div class="pagination"></div>');
+                    // 一共分多少页
+                    var totalPages = Math.ceil(this.total / this.show);
+                    var totalLi = 11;
+                    var list = [];
+                    for (var i = 0; i < totalLi; i++) {
+                        var showNum = '';
+                        // 第一个
+                        if (i === 0) {
+                            showNum = '«'
+                        } else if (i === 1) {
+                            showNum = '1'
+                        } else if (i === 2) {
+                            showNum = '...';
+                        } else if (i === totalLi - 3) {
+                            showNum = '...';
+                        } else if (i === totalLi - 2) {
+                            showNum = totalPages;
+                        } else if (i === totalLi - 1) {
+                            showNum = '»';
+                        } else {
+                            showNum = i - 1;
+                        }
+                        list.push($('<li><a href="javascript:;">' + showNum + '</a></li>'));
+                        //初始化的时候第二个省略号赢藏
+                    }
+                    this.jumpInput = $('<input type="text" class="form-control" style="width:50px;float: left;margin: 0 10px">');
+                    this.jumpBtn = $('<button class="btn btn-default" type="button"><a href="javascript:;">Go!</a></button>');
+                    this.ulContainer.append(list);
+                    this.list = this.ulContainer.find('li');
+                    // 初始化的时候选中第一页，隐藏1后面的省略号
+                    this.list.eq(1).addClass('active');
+                    this.list.eq(2).hide();
+                    this.divContainer.append(this.jumpInput, this.jumpBtn);
+                    this.pageContainer.append(this.ulContainer, this.divContainer);
+                    this.element.append(this.pageContainer);
+                    this._initEvent();
+                }
+            },
+            _initEvent: function() {
+                var _this = this;
+                this.list.click(function() {
+                    var itemNum = $(this).children('a').text();
+
+                    if (itemNum === '«') {
+                        // 跳转到前一页
+                        _this.jumpPrev();
+                    } else if (itemNum === '»') {
+                        // 跳转到后一页
+                        _this.jumpNext();
+                    } else {
+                        //跳转到指定页
+                        _this.jumpAny();
+                    };
+                    console.log(itemNum);
+                });
+            },
+            // 跳转到前一页
+            jumpPrev: function() {
+
+            },
+            // 跳转到后一页
+            jumpNext: function() {
+
+            },
+            //跳转到指定页
+            jumpAny: function() {
+
+            },
+            getValue: function() {
+
+            },
+            //输入框置灰
+            setDisabled: function() {
+                this.button.attr('disabled', 'disabled');
+            },
+            removeDisabled: function() {
+                this.button.removeAttr('disabled');
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreatePages;
+    })();
+    $.fn.CreatePages = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreatePages');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreatePages(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreatePages', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreatePages.defaultValue = {
+        //一共多少数据
+        total: null,
+        //默认每页显示的条数
+        show: 10
+    };
+})(jQuery);
+//分页end
