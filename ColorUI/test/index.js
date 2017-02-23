@@ -138,19 +138,16 @@ $(function() {
         selectIndex: 1,
         data: [{
             'title': 'Home',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(1);
             }
         }, {
             'title': 'Profile',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(2);
             }
         }, {
             'title': 'Messages',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(3);
             }
@@ -160,19 +157,16 @@ $(function() {
     $("#crumb1").CreateCrumb({
         data: [{
             'title': 'Home',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(1);
             }
         }, {
             'title': 'Profile',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(2);
             }
         }, {
             'title': 'Messages',
-            'url': "https://www.baidu.com/",
             'ckickFunc': function() {
                 console.log(3);
             }

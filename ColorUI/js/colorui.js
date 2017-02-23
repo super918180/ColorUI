@@ -894,7 +894,7 @@
                 }
                 var list = [];
                 for (var i = 0; i < this.data.length; i++) {
-                    var liTemp = $('<li role="presentation"><a href="' + this.data[i].url + '">' + this.data[i].title + '</a></li>');
+                    var liTemp = $('<li role="presentation"><a href="javascript:;">' + this.data[i].title + '</a></li>');
                     if (this.selectIndex === i) {
                         liTemp.addClass('active');
                     }
@@ -992,7 +992,7 @@
                 this.CrumbContainer = $('<ol class="breadcrumb"></ol>');
                 var list = [];
                 for (var i = 0; i < this.data.length; i++) {
-                    var liTemp = $('<li><a href="' + this.data[i].url + '">' + this.data[i].title + '</a></li>');
+                    var liTemp = $('<li><a href="javascript:;">' + this.data[i].title + '</a></li>');
                     if (i === this.data.length - 1) {
                         liTemp.addClass('active');
                         liTemp.empty().append(this.data[i].title);
@@ -1091,82 +1091,112 @@
                     this.ulContainer = $('<ul class="pagination" style="float: left"></ul>');
                     this.divContainer = $('<div class="pagination"></div>');
                     // 一共分多少页
-                    var totalPages = Math.ceil(this.total / this.show);
-                    var totalLi = 11;
+                    this.totalPages = Math.ceil(this.total / this.show);
+                    var totalLi = this.totalPages < 9 ? this.totalPages + 2 : 11;
                     var list = [];
                     for (var i = 0; i < totalLi; i++) {
-                        var showNum = '';
-                        // 第一个
-                        if (i === 0) {
-                            showNum = '«'
-                        } else if (i === 1) {
-                            showNum = '1'
-                        } else if (i === 2) {
-                            showNum = '...';
-                        } else if (i === totalLi - 3) {
-                            showNum = '...';
-                        } else if (i === totalLi - 2) {
-                            showNum = totalPages;
-                        } else if (i === totalLi - 1) {
-                            showNum = '»';
-                        } else {
-                            showNum = i - 1;
-                        }
-                        list.push($('<li><a href="javascript:;">' + showNum + '</a></li>'));
+                        list.push($('<li><a href="javascript:;"></a></li>'));
                         //初始化的时候第二个省略号赢藏
                     }
                     this.jumpInput = $('<input type="text" class="form-control" style="width:50px;float: left;margin: 0 10px">');
                     this.jumpBtn = $('<button class="btn btn-default" type="button"><a href="javascript:;">Go!</a></button>');
                     this.ulContainer.append(list);
                     this.list = this.ulContainer.find('li');
-                    // 初始化的时候选中第一页，隐藏1后面的省略号
-                    this.list.eq(1).addClass('active');
-                    this.list.eq(2).hide();
+                    // 1后面的省略号
+                    this.firstDot = this.list.eq(2);
+                    // 最后一页前面的省略号
+                    this.lastDot = this.list.eq(this.list.length - 3);
                     this.divContainer.append(this.jumpInput, this.jumpBtn);
                     this.pageContainer.append(this.ulContainer, this.divContainer);
                     this.element.append(this.pageContainer);
+                    this.selectPage(1);
                     this._initEvent();
                 }
             },
             _initEvent: function() {
                 var _this = this;
                 this.list.click(function() {
-                    var itemNum = $(this).children('a').text();
+                    // 当前点击的页
+                    var page = $(this).children('a').text();
+                    // 点击之前展示的页
+                    var activePage = _this.ulContainer.find('.active').children('a').text();
+                    $(this).siblings().removeClass('active');
+                    if (page === '«') {
+                        _this.jumpPrev(activePage);
+                    } else if (page === '»') {
+                        _this.jumpNext(activePage);
+                    } else if (page === '...') {
 
-                    if (itemNum === '«') {
-                        // 跳转到前一页
-                        _this.jumpPrev();
-                    } else if (itemNum === '»') {
-                        // 跳转到后一页
-                        _this.jumpNext();
                     } else {
-                        //跳转到指定页
-                        _this.jumpAny();
-                    };
-                    console.log(itemNum);
+                        _this.selectPage(page);
+                    }
+
                 });
             },
             // 跳转到前一页
-            jumpPrev: function() {
-
+            jumpPrev: function(page) {
+                var prePage = parseInt(page, 10) - 1;
+                this.selectPage(prePage);
             },
             // 跳转到后一页
-            jumpNext: function() {
-
+            jumpNext: function(page) {
+                var nextPage = parseInt(page, 10) + 1;
+                this.selectPage(nextPage);
             },
             //跳转到指定页
             jumpAny: function() {
 
             },
             getValue: function() {
-
+                return this.ulContainer.find('.avtive').children('a').text();
             },
-            //输入框置灰
-            setDisabled: function() {
-                this.button.attr('disabled', 'disabled');
-            },
-            removeDisabled: function() {
-                this.button.removeAttr('disabled');
+            selectPage: function(page) {
+                var page = parseInt(page, 10);
+                var pagesArr = [];
+                if (this.totalPages < 9) {
+                    for (var i = 0; i < this.totalPages + 2; i++) {
+                        if (i === 0) {
+                            pagesArr.push('«');
+                        } else if (i === this.totalPages + 1) {
+                            pagesArr.push('»');
+                        } else {
+                            pagesArr.push(i);
+                        }
+                    }
+                } else {
+                    this.firstDot.show();
+                    this.lastDot.show();
+                    if (page <= 4) {
+                        pagesArr = ['«', '1', '...', '2', '3', '4', '5', '6', '...', this.totalPages, '»'];
+                        this.firstDot.hide();
+                    } else if (page > 4 && page < this.totalPages - 4) {
+                        pagesArr = ['«', '1', '...', page - 2, page - 1, page, page + 1, page + 2, '...', this.totalPages, '»'];
+                    } else {
+                        pagesArr = ['«', '1', '...', this.totalPages - 5, this.totalPages - 4, this.totalPages - 3, this.totalPages - 2, this.totalPages - 1, '...', this.totalPages, '»'];
+                        this.lastDot.hide();
+                    }
+                }
+                for (var j = 0; j < pagesArr.length; j++) {
+                    this.list.eq(j).children('a').text(pagesArr[j]);
+                }
+                this.list.each(function() {
+                    if ($(this).children('a').text() == page) {
+                        $(this).addClass('active');
+                        $(this).children('a').focus();
+                    }
+                });
+                // 如果第一页被选中，那么置灰上页功能
+                if (this.list.eq(1).hasClass('active')) {
+                    this.list.eq(0).addClass('disabled');
+                } else {
+                    this.list.eq(0).removeClass('disabled');
+                }
+                // 如果最后一页被选中，那么置灰下页功能
+                if (this.list.eq(pagesArr.length - 2).hasClass('active')) {
+                    this.list.eq(pagesArr.length - 1).addClass('disabled');
+                } else {
+                    this.list.eq(pagesArr.length - 1).removeClass('disabled');
+                }
             }
         };
         // 必须要将该对象返回出去
