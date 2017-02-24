@@ -175,8 +175,21 @@ $(function() {
 
     $("#page1").CreatePages({
         //一共多少数据
-        total: 1000,
+        total: 2100,
         //默认每页显示的条数
         show: 10
     });
+
+    $("#progress1").CreateProgress({
+        isShowNum: true,
+        isStriped: true,
+        class: 'danger'
+    });
+    var progress = $("#progress1").data('CreateProgress');
+    var a = 10;
+    setInterval(function() {
+        a = a === 100 ? 0 : a;
+        a += 5;
+        progress.setValue(a);
+    }, 1000);
 });

@@ -2,7 +2,7 @@
     var CreateInput = (function() {
         function CreateInput(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateInput.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateInput.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -211,7 +211,7 @@
     var CreateRadio = (function() {
         function CreateRadio(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateRadio.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateRadio.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -339,7 +339,7 @@
     var CreateCheckbox = (function() {
         function CreateCheckbox(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateCheckbox.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateCheckbox.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -490,7 +490,7 @@
     var CreateDroplist = (function() {
         function CreateDroplist(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateDroplist.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateDroplist.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -665,7 +665,7 @@
     var CreateSwitch = (function() {
         function CreateSwitch(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateSwitch.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateSwitch.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -684,7 +684,7 @@
                 switchBackground.append(switchFront);
                 if (_this.status === 'on') {
                     switchBackground.addClass('ui_switch_background_on');
-                    switchFront.addClass('ui_switch_front_on')
+                    switchFront.addClass('ui_switch_front_on');
                 } else {
                     switchBackground.addClass('ui_switch_background_off');
                     switchFront.addClass('ui_switch_front_off')
@@ -784,7 +784,7 @@
     var CreateButton = (function() {
         function CreateButton(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateButton.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateButton.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -868,7 +868,7 @@
     var CreateTab = (function() {
         function CreateTab(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateTab.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateTab.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -974,7 +974,7 @@
     var CreateCrumb = (function() {
         function CreateCrumb(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreateCrumb.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreateCrumb.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -1073,7 +1073,7 @@
     var CreatePages = (function() {
         function CreatePages(element, options) {
             // 将用户配置项与默认选项进行深拷贝
-            this.settings = $.extend(true, $.fn.CreatePages.defaultValue, options || {});
+            this.settings = $.extend(false, $.fn.CreatePages.defaultValue, options || {});
             this.element = element;
             this.init();
         }
@@ -1098,8 +1098,9 @@
                         list.push($('<li><a href="javascript:;"></a></li>'));
                         //初始化的时候第二个省略号赢藏
                     }
-                    this.jumpInput = $('<input type="text" class="form-control" style="width:50px;float: left;margin: 0 10px">');
-                    this.jumpBtn = $('<button class="btn btn-default" type="button"><a href="javascript:;">Go!</a></button>');
+                    this.jumpInput = $('<input type="text" class="form-control" style="width:50px;float: left;margin: 0 10px;color:#337ab7">');
+                    this.jumpBtn = $('<button class="btn btn-default" type="button" style="color:#337ab7">Go!</button>');
+                    this.jumpBtn.attr('disabled', true);
                     this.ulContainer.append(list);
                     this.list = this.ulContainer.find('li');
                     // 1后面的省略号
@@ -1118,6 +1119,10 @@
                 this.list.click(function() {
                     // 当前点击的页
                     var page = $(this).children('a').text();
+                    //禁止图标和点点点不指定事件
+                    if ($(this).hasClass('disabled') || page === '...') {
+                        return;
+                    }
                     // 点击之前展示的页
                     var activePage = _this.ulContainer.find('.active').children('a').text();
                     $(this).siblings().removeClass('active');
@@ -1130,7 +1135,28 @@
                     } else {
                         _this.selectPage(page);
                     }
-
+                });
+                //跳转页输入框事件
+                this.jumpInput.on('keyup', function() {
+                    var jumpPage = $(this).val();
+                    if (jumpPage !== '' && /^[0-9]*$/.test(jumpPage)) {
+                        var jumpPageNum = parseInt(jumpPage, 10);
+                        //跳转的页码不在范围内
+                        if (jumpPageNum < 1 || jumpPageNum > _this.totalPages) {
+                            _this.jumpBtn.attr('disabled', true);
+                        } else {
+                            _this.jumpBtn.removeAttr('disabled');
+                        }
+                    } else {
+                        _this.jumpBtn.attr('disabled', true);
+                    }
+                });
+                // 跳转按钮绑定事件
+                this.jumpBtn.click(function() {
+                    if (!$(this).attr('disabled')) {
+                        var jumpPage = _this.jumpInput.val();
+                        _this.selectPage(jumpPage);
+                    }
                 });
             },
             // 跳转到前一页
@@ -1142,10 +1168,6 @@
             jumpNext: function(page) {
                 var nextPage = parseInt(page, 10) + 1;
                 this.selectPage(nextPage);
-            },
-            //跳转到指定页
-            jumpAny: function() {
-
             },
             getValue: function() {
                 return this.ulContainer.find('.avtive').children('a').text();
@@ -1236,3 +1258,79 @@
     };
 })(jQuery);
 //分页end
+
+//进度条start
+(function($) {
+    var CreateProgress = (function() {
+        function CreateProgress(element, options) {
+            // 将用户配置项与默认选项进行深拷贝
+            this.settings = $.extend(false, $.fn.CreateProgress.defaultValue, options || {});
+            this.element = element;
+            this.init();
+        }
+        CreateProgress.prototype = {
+            // 初始化插件
+            init: function() {
+                this.isShowNum = this.settings.isShowNum;
+                this.isStriped = this.settings.isStriped;
+                this.class = this.settings.class;
+                this._initDom();
+            },
+            //初始化输入框DOM结构
+            _initDom: function() {
+                var _this = this;
+                this.progressContainer = $('<div class="progress"></div>');
+                this.progressBar = $('<div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>');
+                if (this.isStriped) {
+                    this.progressBar.addClass('progress-bar-striped active');
+                }
+                if (this.class) {
+                    this.progressBar.addClass('progress-bar-' + this.class);
+                }
+                this.progressContainer.append(this.progressBar);
+                this.element.append(this.progressContainer);
+            },
+            setValue: function(value) {
+                this.progressBar.attr('aria-valuenow', value);
+                this.progressBar.css('width', value + '%');
+            }
+        };
+        // 必须要将该对象返回出去
+        return CreateProgress;
+    })();
+    $.fn.CreateProgress = function(options) {
+        return this.each(function() {
+            var _this = $(this),
+                // 从当前对象下读取实例
+                instance = _this.data('CreateProgress');
+            // 如果没有实例新建一个
+            if (!instance) {
+                // 新建实例,_this表示当前选中元素，options表示配置
+                instance = new CreateProgress(_this, options);
+                // 将当前实例保存到data数据中
+                _this.data('CreateProgress', instance);
+            }
+            if ($.type(options) === 'string') {
+                // 带参函数
+                if (/\w*\(*\)/.test(options)) {
+                    var functionName = options.split('(')[0],
+                        functionParam = options.split("(")[1].replace(')', '');
+                    return instance[functionName](functionParam);
+                } else {
+                    // 不带参函数
+                    return instance[options]();
+                }
+            }
+        });
+    };
+    // 默认参数
+    $.fn.CreateProgress.defaultValue = {
+        // 是否显示数字
+        isShowNum: false,
+        // 是否带条纹
+        isStriped: false,
+        //类型success、info、warning、danger
+        class: null
+    };
+})(jQuery);
+//进度条end
