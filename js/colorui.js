@@ -1,4 +1,4 @@
-(function($) {
+! function($) {
     var CreateInput = (function() {
         function CreateInput(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -171,16 +171,8 @@
                 _this.data('CreateInput', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-
-                }
+                // 不带参函数
+                return instance[options]();
             }
         });
     };
@@ -203,11 +195,12 @@
         // 右侧方块图标
         rightAddon: null
     };
-})(jQuery);
+}(jQuery);
 //输入框end
 
 //单选按钮start
-(function($) {
+
+! function($) {
     var CreateRadio = (function() {
         function CreateRadio(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -305,16 +298,7 @@
                 _this.data('CreateRadio', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-
-                }
+                return instance[options]();
             }
         });
     };
@@ -331,11 +315,11 @@
         //值改变的时候调用
         changeFunc: null
     };
-})(jQuery);
+}(jQuery);
 // 单选按钮end
 
 //复选按钮start
-(function($) {
+! function($) {
     var CreateCheckbox = (function() {
         function CreateCheckbox(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -458,16 +442,7 @@
                 _this.data('CreateCheckbox', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-
-                }
+                return instance[options]();
             }
         });
     };
@@ -482,11 +457,11 @@
         //值改变的时候调用
         changeFunc: null
     };
-})(jQuery);
+}(jQuery);
 //复选框end
 
 // 下拉菜单start
-(function($) {
+! function($) {
     var CreateDroplist = (function() {
         function CreateDroplist(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -629,15 +604,7 @@
                 _this.data('CreateDroplist', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -657,11 +624,11 @@
         // 点击下拉的时候触发的方法
         dropDown: null
     };
-})(jQuery);
+}(jQuery);
 //下拉菜单end
 
 // 开关start
-(function($) {
+! function($) {
     var CreateSwitch = (function() {
         function CreateSwitch(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -757,16 +724,7 @@
                 _this.data('CreateSwitch', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-
-                }
+                return instance[options]();
             }
         });
     };
@@ -776,11 +734,11 @@
         status: 'on',
         changeFunc: null
     };
-})(jQuery);
+}(jQuery);
 // 开关end
 
 // 按钮start
-(function($) {
+! function($) {
     var CreateButton = (function() {
         function CreateButton(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -838,15 +796,7 @@
                 _this.data('CreateButton', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -860,11 +810,11 @@
         //点击事件
         ckickFunc: null,
     };
-})(jQuery);
+}(jQuery);
 //按钮end
 
 //页签start
-(function($) {
+! function($) {
     var CreateTab = (function() {
         function CreateTab(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -944,15 +894,7 @@
                 _this.data('CreateTab', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -966,11 +908,11 @@
         // 数据
         data: []
     };
-})(jQuery);
+}(jQuery);
 //页签end
 
 //面包屑start
-(function($) {
+! function($) {
     var CreateCrumb = (function() {
         function CreateCrumb(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -1043,15 +985,7 @@
                 _this.data('CreateCrumb', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -1065,11 +999,11 @@
         // 数据
         data: []
     };
-})(jQuery);
+}(jQuery);
 //面包end
 
 //分页start
-(function($) {
+! function($) {
     var CreatePages = (function() {
         function CreatePages(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -1203,6 +1137,7 @@
                 }
                 this.list.each(function() {
                     if ($(this).children('a').text() == page) {
+                        $(this).siblings().removeClass('active');
                         $(this).addClass('active');
                         $(this).children('a').focus();
                     }
@@ -1237,15 +1172,7 @@
                 _this.data('CreatePages', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -1256,11 +1183,11 @@
         //默认每页显示的条数
         show: 10
     };
-})(jQuery);
+}(jQuery);
 //分页end
 
 //进度条start
-(function($) {
+! function($) {
     var CreateProgress = (function() {
         function CreateProgress(element, options) {
             // 将用户配置项与默认选项进行深拷贝
@@ -1311,15 +1238,7 @@
                 _this.data('CreateProgress', instance);
             }
             if ($.type(options) === 'string') {
-                // 带参函数
-                if (/\w*\(*\)/.test(options)) {
-                    var functionName = options.split('(')[0],
-                        functionParam = options.split("(")[1].replace(')', '');
-                    return instance[functionName](functionParam);
-                } else {
-                    // 不带参函数
-                    return instance[options]();
-                }
+                return instance[options]();
             }
         });
     };
@@ -1332,5 +1251,5 @@
         //类型success、info、warning、danger
         class: null
     };
-})(jQuery);
+}(jQuery);
 //进度条end
