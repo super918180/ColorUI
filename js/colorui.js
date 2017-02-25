@@ -504,6 +504,7 @@
                     this.droplistContainer.append(this.lastButton);
                 }
                 this.lastButton.click(function() {
+                    $(this).parent().toggleClass('open');
                     if ($.type(_this.settings.dropDown) === 'function' && !$(this).parent().hasClass('open')) {
                         _this.settings.dropDown();
                     }
@@ -547,6 +548,7 @@
                             currentA.click(function() {
                                 $(this).parent().siblings().removeClass('active');
                                 $(this).parent().addClass('active');
+                                _this.droplistContainer.removeClass('open');
                                 _this.changeFunc($(this).attr('data-value'), true);
                             });
                         }
