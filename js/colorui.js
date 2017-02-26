@@ -1336,6 +1336,7 @@
         },
         show: function() {
             var _this = this;
+            $(document.body).addClass('modal-open');
             this.modalContainer.show();
             this.center();
             setTimeout(function() {
@@ -1344,6 +1345,7 @@
         },
         remove: function() {
             var _this = this;
+            $(document.body).removeClass('modal-open');
             this.modalContainer.removeClass('in');
             setTimeout(function() {
                 _this.modalContainer.remove();
@@ -1405,17 +1407,15 @@
                 //鼠标滑动时的Y轴
                 var y = event.clientY;
                 if (isDown) {
-                    // 设置边界值，不让其拖到边界外边
-                    var left = x - mX + dX;
-                    var top = y - mY + dY;
+                    // 设置边界值，不让其拖到边界外边,上面取值使用了offset,将滚动条也算在内了
+                    var left = x - mX + dX - $(window).scrollLeft();
+                    var top = y - mY + dY - $(window).scrollTop();
                     //最小边界值判断
                     left = left < 0 ? 0 : left;
                     top = top < 0 ? 0 : top;
                     // 最大边界值判断
                     var maxLeft = $(window).width() - $divWrap.width();
                     var maxTop = $(window).height() - $divWrap.height();
-                    console.log(maxLeft, left);
-                    console.log(maxTop, top);
                     left = left > maxLeft ? maxLeft : left;
                     top = top > maxTop ? maxTop : top;
                     //div动态位置赋值
