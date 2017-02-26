@@ -1255,3 +1255,182 @@
     };
 }(jQuery);
 //进度条end
+
+//模态框start
+! function($) {
+    var Modal = function(config) {
+        var_this = this;
+        // 默认配置
+        this.config = {
+            title: '',
+            html: '',
+            width: null,
+            height: null,
+            cancel: null,
+            confirm: null
+        };
+        if (config && $.isPlainObject(config)) {
+            $.extend(this.config, config);
+        }
+        this._initDom();
+    };
+    Modal.prototype = {
+        _initDom: function() {
+            //模态框内容
+            this.modalContainer = $('<div class="modal fade"></div>');
+            this.modalContainer.css('background', 'rgba(0,0,0,0.5)');
+            this.dialogContainer = $('<div class="modal-dialog"></div>');
+            //绝对定位，用于拖拽
+            this.dialogContainer.css({
+                'position': 'absolute',
+                'margin': '0'
+            });
+            // 自定义模态框宽高
+            if (this.config.width) {
+                this.dialogContainer.width(this.config.width);
+            }
+            if (this.config.height) {
+                this.dialogContainer.height(this.config.height);
+                //默认高度自适应
+                this.dialogContainer.css('overflow', 'hidden');
+            }
+            this.contentContainer = $('<div class="modal-content"></div>');
+            //模态框头部
+            this.dialogHeader = $('<div class="modal-header"></div>');
+            this.closeButton = $('<button class="close"><span>&times;</span></button>');
+            this.dialogTitle = $('<h4 class="modal-title">' + this.config.title + '</h4>');
+            this.dialogHeader.append(this.closeButton, this.dialogTitle);
+            //模态框内容
+            this.dialogBody = $('<div class="modal-body"></div>');
+            this.dialogBody.append(this.config.html);
+            //模态框底部
+            this.dialogFooter = $('<div class="modal-footer"></div>');
+            this.cancelBtn = $('<button type="button" class="btn btn-default">取消</button>');
+            this.confirmBtn = $('<button type="button" class="btn btn-primary">确定</button>');
+            this.dialogFooter.append(this.cancelBtn, this.confirmBtn);
+            this.modalContainer.append(this.dialogContainer.append(this.contentContainer.append(this.dialogHeader, this.dialogBody, this.dialogFooter)));
+            $(document.body).append(this.modalContainer);
+            this._initEvent();
+        },
+        _initEvent: function() {
+            var _this = this;
+            this.closeButton.click(function() {
+                if ($.type(_this.config.cancel) === 'function') {
+                    _this.config.cancel();
+                }
+                _this.remove();
+            });
+            this.cancelBtn.click(function() {
+                if ($.type(_this.config.cancel) === 'function') {
+                    _this.config.cancel();
+                }
+                _this.remove();
+            });
+            this.confirmBtn.click(function() {
+                if ($.type(_this.config.confirm) === 'function') {
+                    _this.config.confirm();
+                }
+            });
+            //鼠标拖拽事件
+            this.dialogHeader.Drag(this.dialogContainer);
+        },
+        show: function() {
+            var _this = this;
+            this.modalContainer.show();
+            this.center();
+            setTimeout(function() {
+                _this.modalContainer.addClass('in');
+            }, 150);
+        },
+        remove: function() {
+            var _this = this;
+            this.modalContainer.removeClass('in');
+            setTimeout(function() {
+                _this.modalContainer.remove();
+            }, 150);
+
+        },
+        center: function() {
+            // 可视区域的大小
+            widowWidth = $(window).width();
+            widowHeight = $(window).height();
+            // 弹窗大小
+            modalWidth = this.dialogContainer.width();
+            modalHeight = this.dialogContainer.height();
+            // 计算绝对居中位置
+            var modalLeft = (widowWidth - modalWidth) / 2;
+            var modalTop = (widowHeight - modalHeight) / 2;
+            //位置小于0，则为0
+            modalLeft = modalLeft > 0 ? modalLeft : 0;
+            modalTop = modalTop > 0 ? modalTop : 0;
+            // 计算的位置应用到弹窗中
+            this.dialogContainer.css({ left: modalLeft, top: modalTop });
+        }
+    };
+    $.Modal = function(config) {
+        return new Modal(config);
+    };
+}(jQuery);
+//模态框end
+
+//拖拽start
+(function($) {
+    $.fn.Drag = function(divWrap) {
+        return this.each(function() {
+            //鼠标可拖拽区域
+            var $divMove = $(this);
+            //整个移动区域
+            var $divWrap = divWrap ? divWrap : $divMove;
+            //定义鼠标X轴Y轴
+            var mX = 0,
+                mY = 0;
+            //定义div左、上位置
+            var dX = 0,
+                dY = 0;
+            //mousedown标记
+            var isDown = false;
+            $divMove.mousedown(function(event) {
+                var event = event || window.event;
+                mX = event.clientX;
+                mY = event.clientY;
+                dX = $divWrap.offset().left;
+                dY = $divWrap.offset().top;
+                //鼠标拖拽启动
+                isDown = true;
+            });
+            $(document).mousemove(function(event) {
+                var event = event || window.event;
+                //鼠标滑动时的X轴
+                var x = event.clientX;
+                //鼠标滑动时的Y轴
+                var y = event.clientY;
+                if (isDown) {
+                    // 设置边界值，不让其拖到边界外边
+                    var left = x - mX + dX;
+                    var top = y - mY + dY;
+                    //最小边界值判断
+                    left = left < 0 ? 0 : left;
+                    top = top < 0 ? 0 : top;
+                    // 最大边界值判断
+                    var maxLeft = $(window).width() - $divWrap.width();
+                    var maxTop = $(window).height() - $divWrap.height();
+                    console.log(maxLeft, left);
+                    console.log(maxTop, top);
+                    left = left > maxLeft ? maxLeft : left;
+                    top = top > maxTop ? maxTop : top;
+                    //div动态位置赋值
+                    $divWrap.css({ "left": left, "top": top });
+                }
+            });
+            $(document).mouseup(function() {
+                //鼠标拖拽结束
+                isDown = false;
+            });
+            $divMove.mouseup(function() {
+                //鼠标拖拽结束
+                isDown = false;
+            });
+        });
+    };
+})(jQuery);
+// 拖拽end

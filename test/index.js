@@ -192,4 +192,17 @@ $(function() {
         a += 5;
         progress.setValue(a);
     }, 1000);
+
+    var modal1 = $.Modal({
+        title: '请确认',
+        html: 'One fine body…',
+        width: '400px',
+        cancel: function() {
+            console.log('取消');
+        },
+        confirm: function() {
+            console.log('确定');
+        },
+    });
+    modal1.show();
 });
