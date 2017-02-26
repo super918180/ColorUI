@@ -1376,7 +1376,7 @@
 //模态框end
 
 //拖拽start
-(function($) {
+! function($) {
     $.fn.Drag = function(divWrap) {
         return this.each(function() {
             //鼠标可拖拽区域
@@ -1432,5 +1432,5 @@
             });
         });
     };
-})(jQuery);
+}(jQuery);
 // 拖拽end
