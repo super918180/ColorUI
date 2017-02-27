@@ -1266,8 +1266,9 @@
             html: '',
             width: null,
             height: null,
-            cancel: null,
-            confirm: null
+            hiddenCancel: false,
+            cancel: { title: '取消', clickFunc: null },
+            confirm: { title: '确定', clickFunc: null }
         };
         if (config && $.isPlainObject(config)) {
             $.extend(this.config, config);
@@ -1305,9 +1306,13 @@
             this.dialogBody.append(this.config.html);
             //模态框底部
             this.dialogFooter = $('<div class="modal-footer"></div>');
-            this.cancelBtn = $('<button type="button" class="btn btn-default">取消</button>');
-            this.confirmBtn = $('<button type="button" class="btn btn-primary">确定</button>');
-            this.dialogFooter.append(this.cancelBtn, this.confirmBtn);
+            this.cancelBtn = $('<button type="button" class="btn btn-default">' + this.config.cancel.title + '</button>');
+            this.confirmBtn = $('<button type="button" class="btn btn-primary">' + this.config.confirm.title + '</button>');
+            if (this.hiddenCancel) {
+                this.dialogFooter.append(this.confirmBtn);
+            } else {
+                this.dialogFooter.append(this.cancelBtn, this.confirmBtn);
+            }
             this.modalContainer.append(this.dialogContainer.append(this.contentContainer.append(this.dialogHeader, this.dialogBody, this.dialogFooter)));
             $(document.body).append(this.modalContainer);
             this._initEvent();
@@ -1315,20 +1320,20 @@
         _initEvent: function() {
             var _this = this;
             this.closeButton.click(function() {
-                if ($.type(_this.config.cancel) === 'function') {
-                    _this.config.cancel();
+                if ($.type(_this.config.cancel.clickFunc) === 'function') {
+                    _this.config.cancel.clickFunc();
                 }
                 _this.remove();
             });
             this.cancelBtn.click(function() {
-                if ($.type(_this.config.cancel) === 'function') {
-                    _this.config.cancel();
+                if ($.type(_this.config.cancel.clickFunc) === 'function') {
+                    _this.config.cancel.clickFunc();
                 }
                 _this.remove();
             });
             this.confirmBtn.click(function() {
-                if ($.type(_this.config.confirm) === 'function') {
-                    _this.config.confirm();
+                if ($.type(_this.config.confirm.clickFunc) === 'function') {
+                    _this.config.confirm.clickFunc();
                 }
             });
             //鼠标拖拽事件
@@ -1374,6 +1379,55 @@
     };
 }(jQuery);
 //模态框end
+
+//提示框start，基于模态框
+! function($) {
+    var Tip = function(config) {
+        var_this = this;
+        // 默认配置
+        this.config = {
+            //confirm 和 feedback
+            type: 'confirm',
+            class: '',
+            title: '',
+            detail: '',
+            cancel: { title: '取消', clickFunc: null },
+            confirm: { title: '确定', clickFunc: null }
+        };
+        if (config && $.isPlainObject(config)) {
+            $.extend(this.config, config);
+        }
+        // 绘制内容显示-操作确认弹窗
+        var htmlStr = '';
+        htmlStr += '<h3>' + this.config.title + '</h3>';
+        htmlStr += '<p>' + this.config.detail + '</p>';
+
+        //继承模态框
+        this.tipObj = $.Modal({
+            html: htmlStr,
+            width: '400px',
+            hiddenCancel: this.config.type === 'confirm' ? false : true,
+            cancel: this.config.cancel,
+            confirm: this.config.confirm
+        });
+        this._initDom();
+    };
+    Tip.prototype = {
+        _initDom: function() {
+            // 去掉模态框分割线
+            this.tipObj.dialogHeader.css('border-bottom', '0px');
+            this.tipObj.dialogFooter.css('border-top', '0px');
+            this.tipObj.dialogBody.css({
+                'text-align': 'center'
+            });
+            this.tipObj.show();
+        }
+    };
+    $.ShowTip = function(config) {
+        return new Tip(config);
+    };
+}(jQuery);
+//提示框end
 
 //拖拽start
 ! function($) {

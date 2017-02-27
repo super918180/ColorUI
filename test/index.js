@@ -193,16 +193,26 @@ $(function() {
         progress.setValue(a);
     }, 1000);
 
-    var modal1 = $.Modal({
-        title: '请确认',
-        html: 'One fine body…',
-        width: '400px',
-        cancel: function() {
-            console.log('取消');
-        },
-        confirm: function() {
-            console.log('确定');
-        },
+    // var modal1 = $.Modal({
+    //     title: '请确认',
+    //     html: 'One fine body…',
+    //     width: '400px',
+    //     confirm: {
+    //         title: '下一步',
+    //         clickFunc: function() {
+    //             console.log('确定');
+    //         }
+    //     }
+    // });
+    // modal1.show();
+
+    $.ShowTip({
+        //confirm 和 feedback
+        type: 'confirm',
+        class: '',
+        title: '听见啥？',
+        detail: '我仿佛听见有人在说我帅？',
+        cancel: { title: '取消', clickFunc: null },
+        confirm: { title: '确定', clickFunc: null }
     });
-    modal1.show();
 });
