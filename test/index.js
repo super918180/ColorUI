@@ -208,8 +208,8 @@ $(function() {
 
     $.ShowTip({
         //confirm 和 feedback
-        type: 'confirm',
-        class: '',
+        type: 'feedback',
+        class: 'info',
         title: '听见啥？',
         detail: '我仿佛听见有人在说我帅？',
         cancel: { title: '取消', clickFunc: null },

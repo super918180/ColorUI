@@ -1308,8 +1308,10 @@
             this.dialogFooter = $('<div class="modal-footer"></div>');
             this.cancelBtn = $('<button type="button" class="btn btn-default">' + this.config.cancel.title + '</button>');
             this.confirmBtn = $('<button type="button" class="btn btn-primary">' + this.config.confirm.title + '</button>');
-            if (this.hiddenCancel) {
+            if (this.config.hiddenCancel) {
+                // 只有一个按钮的时候显示默认样式
                 this.dialogFooter.append(this.confirmBtn);
+                this.confirmBtn.removeClass('btn-primary').addClass('btn-default');
             } else {
                 this.dialogFooter.append(this.cancelBtn, this.confirmBtn);
             }
@@ -1399,6 +1401,22 @@
         }
         // 绘制内容显示-操作确认弹窗
         var htmlStr = '';
+        if (this.config.type === 'feedback') {
+            var positionStr = 'background:url(../images/tip-icon.png);';
+            positionStr += 'background-size:240px 60px;';
+            positionStr += 'background-position-x: ';
+            // 设置提示图标
+            if (this.config.class === 'success') {
+                positionStr += '0px;';
+            } else if (this.config.class === 'warning') {
+                positionStr += '-120px;';
+            } else if (this.config.class === 'error') {
+                positionStr += '-180px;';
+            } else {
+                positionStr += '-60px;';
+            }
+            htmlStr += '<div style="' + positionStr + ' width:60px;height:60px;margin:0 auto;"></div>';
+        }
         htmlStr += '<h3>' + this.config.title + '</h3>';
         htmlStr += '<p>' + this.config.detail + '</p>';
 
