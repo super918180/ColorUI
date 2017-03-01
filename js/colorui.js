@@ -1337,6 +1337,9 @@
                 if ($.type(_this.config.confirm.clickFunc) === 'function') {
                     _this.config.confirm.clickFunc();
                 }
+                if (_this.config.hiddenCancel) {
+                    _this.remove();
+                }
             });
             //鼠标拖拽事件
             this.dialogHeader.Drag(this.dialogContainer);
@@ -1403,19 +1406,19 @@
         var htmlStr = '';
         if (this.config.type === 'feedback') {
             var positionStr = 'background:url(../images/tip-icon.png);';
-            positionStr += 'background-size:240px 60px;';
+            positionStr += 'background-size:200px 50px;';
             positionStr += 'background-position-x: ';
             // 设置提示图标
             if (this.config.class === 'success') {
                 positionStr += '0px;';
             } else if (this.config.class === 'warning') {
-                positionStr += '-120px;';
+                positionStr += '-100px;';
             } else if (this.config.class === 'error') {
-                positionStr += '-180px;';
+                positionStr += '-150px;';
             } else {
-                positionStr += '-60px;';
+                positionStr += '-50px;';
             }
-            htmlStr += '<div style="' + positionStr + ' width:60px;height:60px;margin:0 auto;"></div>';
+            htmlStr += '<div style="' + positionStr + ' width:50px;height:50px;margin:0 auto;"></div>';
         }
         htmlStr += '<h3>' + this.config.title + '</h3>';
         htmlStr += '<p>' + this.config.detail + '</p>';
