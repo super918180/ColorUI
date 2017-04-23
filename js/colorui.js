@@ -14,7 +14,6 @@
                 this.length = this.settings.length;
                 this.placeholder = this.settings.placeholder;
                 this.isRequired = this.settings.isRequired;
-                this.hasFeedback = this.settings.hasFeedback;
                 this.leftAddon = this.settings.leftAddon;
                 this.rightAddon = this.settings.rightAddon;
                 this._initDom();
@@ -44,14 +43,11 @@
                     rightAddon.html(this.rightAddon);
                     inputGroup.append(rightAddon);
                 }
-                //图标反馈
-                var feedbackSpan = $('<span class="glyphicon form-control-feedback"></span>');
-                this.feedbackSpan = feedbackSpan;
-                if (this.hasFeedback) {
-                    inputContainer.addClass('has-feedback');
-                    inputGroup.append(feedbackSpan);
+                if (this.leftAddon || this.rightAddon) {
+                    inputContainer.append(inputGroup);
+                } else {
+                    inputContainer.append(input);
                 }
-                inputContainer.append(inputGroup);
                 this.element.append(inputContainer);
                 this.inputContainer = inputContainer;
                 this.input = input;
@@ -63,17 +59,23 @@
                 // 如果输入框只读的话就不操作
                 var _this = this;
                 _this.input.bind('blur keyup', function() {
-                    if (!_this.input.attr('readonly')) {
+                    //只有text且在非置灰情况下，才进行输入框值校验
+                    if (this.type == 'text' && !_this.input.attr('readonly')) {
                         if (_this.isRequired) {
                             if (_this.getValue() === '') {
                                 _this.setStatus('error');
                             }
                         } else {
-                            if (_this._checkSpec()) {
-                                _this._checkLengh();
+                            if (_this.getValue() === '') {
+                                _this.setStatus('blur');
                             } else {
-                                _this.setStatus('error');
+                                if (_this._checkSpec()) {
+                                    _this._checkLengh();
+                                } else {
+                                    _this.setStatus('error');
+                                }
                             }
+
                         }
                     }
                 });
@@ -122,17 +124,13 @@
             },
             //设置输入框状态，正确，错误，失去焦点，获得焦点
             setStatus: function(status) {
-                this.inputContainer.removeClass('has-success,has-error,has-warning');
-                this.feedbackSpan.removeClass('glyphicon-ok,glyphicon-remove,glyphicon-warning-sign');
+                this.inputContainer.removeClass('has-success has-error has-warning');
                 if (status === "right") {
                     this.inputContainer.addClass('has-success');
-                    this.feedbackSpan.addClass('glyphicon-ok');
                 } else if (status === "warning") {
                     this.inputContainer.addClass('has-warning');
-                    this.feedbackSpan.addClass('glyphicon-warning-sign');
                 } else if (status === "error") {
                     this.inputContainer.addClass('has-error');
-                    this.feedbackSpan.addClass('glyphicon-remove');
                 } else if (status === "blur") {
 
                 } else if (status === "focus") {
@@ -140,7 +138,7 @@
                 }
             },
             //输入框置灰
-            setDisabled: function(flag) {
+            setDisabled: function() {
                 this.input.attr('readonly', '');
             },
             removeDisabled: function() {
@@ -188,8 +186,6 @@
         placeholder: null,
         //是否必填
         isRequired: false,
-        //反馈图标（feedback icon）只能使用在文本输入框 <input class="form-control"> 元素上。
-        hasFeedback: false,
         // 左侧方块图标
         leftAddon: null,
         // 右侧方块图标
@@ -381,7 +377,7 @@
                     }
                 }
             },
-            removeDisabled: function() {
+            removeDisabled: function(indexArr) {
                 for (var i = 0; i < indexArr.length; i++) {
                     if (this.inline) {
                         this.checkboxAll.eq(indexArr[i]).removeAttr('disabled', 'disabled').parent().removeClass('disabled');
@@ -1393,6 +1389,7 @@
         this.config = {
             //confirm 和 feedback
             type: 'confirm',
+            //success,warning,error,其他
             class: '',
             title: '',
             detail: '',

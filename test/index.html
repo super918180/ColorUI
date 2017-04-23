@@ -11,6 +11,39 @@
     <!-- Bootstrap -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/colourui.css" rel="stylesheet">
+    <style>
+        .bs-example {
+            position: relative;
+            padding: 45px 15px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .bs-example::after {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #959595;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            content: "实例：";
+        }
+        
+        .buttonArr,
+        .tipArr {
+            float: left;
+            margin-right: 20px;
+        }
+        
+        .titleP {
+            color: #959595;
+            font-size: 12px;
+            font-weight: 700;
+        }
+    </style>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,19 +55,166 @@
 
 <body>
     <div class="col-md-8">
-        <div id="text1"></div>
-        <div id="droplist1"></div>
-        <div id="droplist2"></div>
-        <div id="radio1"></div>
-        <div id="checkbox1"></div>
-        <div id="switch1"></div>
-        <div id="button1"></div>
-        <div id="button2"></div>
-        <div id="tab1"></div>
-        <div id="tab2"></div>
-        <div id="crumb1"></div>
-        <div id="page1"></div>
-        <div id="progress1"></div>
+        <div>
+            <h2 id="labels" class="page-header">输入框组件</h2>
+            <p>输入框组件，提供强大的校验功能</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div style="margin-bottom:20px">
+                    <button class="btn btn-default" id="text1_success">状态：正确</button>
+                    <button class="btn btn-default" id="text1_warning">状态：告警</button>
+                    <button class="btn btn-default" id="text1_error">状态：错误</button>
+                    <button class="btn btn-default" id="text1_blur">状态：正常</button>
+                    <button class="btn btn-default" id="text1_disable">置灰</button>
+                    <button class="btn btn-default" id="text1_enable">去置灰</button>
+                    <button class="btn btn-default" id="text1_getValue">获取值</button>
+                    <button class="btn btn-default" id="text1_setValue">塞入值</button>
+                </div>
+                <div id="text1"></div>
+                <p class="titleP">按钮组:</p>
+                <div id="text2"></div>
+            </div>
+        </div>
+        <div>
+            <h2 id="labels" class="page-header">分页组件</h2>
+            <p>智能分页组件，能够根据总数目和当前页显示数目，生成正确的分页组件，同时支持任意页码的跳转</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="page1_totle" class="col-sm-3 control-label">当前共有多少条记录：</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="page1_totle" placeholder="1000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="page1_every" class="col-sm-3 control-label">每页展示多少条记录：</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="page1_every" placeholder="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button id="page1_create" class="btn btn-default">生成分页组件</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="page1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">提示框</h2>
+            <p>提供四种类型的提示框：默认、成功、警告、错误</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <p>反馈提示框</p>
+                <div>
+                    <div id="tip1" class="tipArr"></div>
+                    <div id="tip2" class="tipArr"></div>
+                    <div id="tip3" class="tipArr"></div>
+                    <div id="tip4" class="tipArr"></div>
+                </div>
+                <div style="clear:both"></div>
+                <br/>
+                <p>确认提示框</p>
+                <div>
+                    <div id="tip5"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">单选按钮</h2>
+            <p>提供默认选中、任意选中、获取选中等常见输入框方法</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="radio1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">多选按钮</h2>
+            <p>强大的多选按钮功能，自集成众多功能</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <button class="btn btn-default" id="checkbox1_selectAll">全选</button>
+                <button class="btn btn-default" id="checkbox1_seclectNone">全不选</button>
+                <button class="btn btn-default" id="checkbox1_selectInverse">反选</button>
+                <button class="btn btn-default" id="checkbox1_getValue">获取选中值</button>
+                <button class="btn btn-default" id="checkbox1_setDisabled">置灰</button>
+                <button class="btn btn-default" id="checkbox1_removeDisabled">去置灰</button>
+                <div id="checkbox1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">开关</h2>
+            <p>好看的开关按钮，平滑的切换效果</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="switch1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">按钮</h2>
+            <p>提供各种样式的按钮，满足业务功能需求</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="button0"></div>
+                <br />
+                <br />
+                <div id="button1" class="buttonArr"></div>
+                <div id="button2" class="buttonArr"></div>
+                <div id="button3" class="buttonArr"></div>
+                <div id="button4" class="buttonArr"></div>
+                <div id="button5" class="buttonArr"></div>
+                <div id="button6" class="buttonArr"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">Tab页签</h2>
+            <p>提供横排和竖排两种样式的页签</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="tab1"></div>
+                <br />
+                <br />
+                <div id="tab2"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">下拉框组件</h2>
+            <p>下拉框组件能够,根据一组数组，自动创建一个下拉框，同时支持部分选项置灰，切换值后回调等功能</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div class="col-sm-4" style="float:left" id="droplist1"></div>
+                <div style="float:left" id="droplist2"></div>
+                <br />
+                <br />
+                <br />
+            </div>
+        </div>
+
+
+        <div style="clear:both">
+            <h2 id="labels" class="page-header">面包屑</h2>
+            <p>面包屑</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="crumb1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">进度条</h2>
+            <p>进度条</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="progress1"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2 id="labels" class="page-header">模态框</h2>
+            <p>强大的定制内容，平滑的拖拽效果</p>
+            <div class="bs-example" data-example-id="labels-in-headings">
+                <div id="modelBtn"></div>
+            </div>
+        </div>
+
     </div>
 
 
